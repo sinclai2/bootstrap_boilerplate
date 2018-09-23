@@ -4,6 +4,7 @@ const plumber = require('gulp-plumber');
 const browserSync = require('browser-sync').create();
 const pug = require('gulp-pug');
 const autoprefixer = require('gulp-autoprefixer');
+const concat = require('gulp-concat');
 
 // ---------Tasks---------------
 gulp.task('pug', function () {
@@ -11,7 +12,7 @@ gulp.task('pug', function () {
       .pipe(plumber())
       .pipe(pug({
         doctype: 'html',
-        pretty: false,
+        pretty: true,
       }))
       .pipe(gulp.dest('./build'));
 });
@@ -29,6 +30,12 @@ gulp.task('sass', function () {
       }));
 });
 
+gulp.task('script', function () {
+  gulp.src('./src/js/*.js')
+    .pipe(concat('script.js'))
+    .pipe(gulp.dest('./build/js'));
+});
+
 gulp.task('serve', function () {
   browserSync.init({
     server: {
@@ -41,6 +48,7 @@ gulp.task('serve', function () {
 gulp.task('watch', function () {
   gulp.watch('./src/views/**/*.pug', ['pug']);
   gulp.watch('./src/sass/*.scss', ['sass']);
+  gulp.watch('./src/js/*.js', ['script']);
   gulp.watch('./**/*.html').on('change', browserSync.reload);
 });
 
